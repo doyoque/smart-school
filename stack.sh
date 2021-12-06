@@ -73,6 +73,7 @@ then
     fi
     laravel_common_init
     docker-compose exec school-app php artisan migrate
+    docker-compose exec php artisan passport:install --force
     npm run watch
 fi
 
