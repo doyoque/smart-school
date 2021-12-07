@@ -41,7 +41,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.school_admin)) {
-    if ((localStorage.token) && localStorage.role === 'school-admin') {
+    if (localStorage.token) {
       next()
     } else {
       next('/')

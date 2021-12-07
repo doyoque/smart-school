@@ -8,6 +8,11 @@ import appRoute from '@routes/route.js'
 
 axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('token')
 
+// destructuring response API
+axios.interceptors.response.use(response => {
+  return response.data
+})
+
 const app = new Vue({
   el: '#app',
   render: h => h(App),

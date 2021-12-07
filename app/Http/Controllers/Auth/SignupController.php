@@ -16,7 +16,7 @@ class SignupController extends Controller
 {
     /**
      * Handle signup.
-     * 
+     *
      * @param Illuminate\Http\Request $request
      * @return mixed
      */
