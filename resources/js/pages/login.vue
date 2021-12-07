@@ -3,65 +3,35 @@
     <div class="container mx-auto py-8">
       <div class="w-5/6 lg:w-1/2 mx-auto bg-white rounded shadow">
         <div class="py-4 px-8 text-black text-xl border-b border-grey-lighter">
-          Register first
+          Login
         </div>
         <div class="py-4 px-8">
-          <div class="flex mb-4">
-            <div class="w-1/2 mr-1">
-              <label
-                class="block text-grey-darker text-sm font-bold mb-2"
-                for="name"
-                >Name</label
-              >
-              <input
-                class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                id="name"
-                type="text"
-                placeholder="Your full name"
-                v-model="name"
-              />
-            </div>
-            <div class="w-1/2 ml-1">
-              <label
-                class="block text-grey-darker text-sm font-bold mb-2"
-                for="username"
-                >Username</label
-              >
-              <input
-                class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-                id="username"
-                type="text"
-                placeholder="Your username for this account"
-                v-model="username"
-              />
-            </div>
-          </div>
           <div class="mb-4">
             <label
               class="block text-grey-darker text-sm font-bold mb-2"
               for="school_name"
-              >School name</label
+              >School id</label
             >
             <input
               class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-              id="school_name"
+              id="school_id"
               type="text"
-              placeholder="Your school name"
-              v-model="school_name"
+              placeholder="Your school id (number)"
+              v-model="school_id"
             />
           </div>
           <div class="mb-4">
             <label
               class="block text-grey-darker text-sm font-bold mb-2"
-              for="email"
-              >Email Address</label
+              for="username"
+              >Username</label
             >
             <input
               class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-              id="email"
-              type="email"
-              placeholder="Your email address"
-              v-model="email"
+              id="username"
+              type="text"
+              placeholder="Your username account"
+              v-model="username"
             />
           </div>
           <div class="mb-4">
@@ -83,18 +53,18 @@
             <button
               class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full"
               type="button"
-              @click="register"
+              @click="login"
             >
-              Sign Up
+              Login
             </button>
           </div>
         </div>
       </div>
       <p class="text-center my-4">
-        <router-link
-          to="/login"
+        <a
+          href="#"
           class="text-grey-dark text-sm no-underline hover:text-grey-darker"
-          >I already have an account</router-link
+          >I already have an account</a
         >
       </p>
     </div>
@@ -103,30 +73,27 @@
 
 <script>
 export default {
-  name: "index",
+  name: "login",
   data() {
     return {
-      name: "",
       username: "",
-      email: "",
+      school_id: null,
       password: "",
-      school_name: "",
     };
   },
   methods: {
-    async register() {
+    async login() {
       let payload = {
-        name: this.name,
         username: this.username,
+        school_id: this.school_id,
         password: this.password,
-        email: this.email,
-        school_name: this.school_name,
       };
 
       await axios
-        .post(`/api/v1/signup`, payload)
+        .post(`api/v1/login`, payload)
         .then((res) => {
           localStorage.setItem("token", res.token);
+          localStorage.setItem("role", res.role);
         })
         .catch((err) => {
           console.log(err);
