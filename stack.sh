@@ -72,8 +72,8 @@ then
         install_node
     fi
     laravel_common_init
-    docker-compose exec school-app php artisan migrate
-    docker-compose exec php artisan passport:install --force
+    docker-compose exec school-app php artisan migrate:refresh --seed
+    docker-compose exec school-app php artisan passport:install --force
     npm run watch
 fi
 
