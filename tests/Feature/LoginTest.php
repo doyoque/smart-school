@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Laravel\Passport\Passport;
 use App\Models\Role;
 use App\Models\School;
 use App\Models\User;
@@ -59,6 +60,29 @@ class LoginTest extends TestCase
                 'role',
                 'token',
                 'code',
+            ]);
+    }
+
+    /**
+     * Get user info.
+     *
+     * @return void
+     * @test
+     */
+    public function get_user_info_after_login()
+    {
+        Passport::actingAs(User::factory()->create([
+            'role_id' => 1,
+            'school_id' => 1,
+        ]));
+
+        $this->getJson('api/v1/user')
+            ->assertStatus(200)->assertJsonStructure([
+                'data' => [
+                    'name',
+                    'role' => ['id', 'name'],
+                    'school' => ['id', 'name'],
+                ]
             ]);
     }
 }
