@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserCollection;
 
 class LoginController extends Controller
 {
@@ -38,6 +37,24 @@ class LoginController extends Controller
                 'message' => 'Credential is wrong.',
                 'code' => Response::HTTP_UNAUTHORIZED,
             ], Response::HTTP_UNAUTHORIZED);
+        } catch (\Exception $e) {
+            return response([
+                'message' => $e->getMessage(),
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get authenticated user info.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function info(Request $request)
+    {
+        try {
+            return UserCollection::make($request->user());
         } catch (\Exception $e) {
             return response([
                 'message' => $e->getMessage(),

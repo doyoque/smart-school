@@ -18,4 +18,8 @@ use App\Http\Controllers\Auth\LoginController;
 Route::group(['prefix' => 'v1'], function () {
     Route::post('signup', [SignupController::class, 'signup']);
     Route::post('login', [LoginController::class, 'login']);
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('user', [LoginController::class, 'info']);
+    });
 });
