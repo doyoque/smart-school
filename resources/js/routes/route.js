@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import IndexPage from '@pages/index.vue'
 import DashboardPage from '@pages/dashboard.vue'
 import SignupPage from '@pages/signup.vue'
+import LoginPage from '@pages/login.vue'
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,14 @@ const routes = [
     path: '/signup',
     name: 'signup',
     component: SignupPage,
+    meta: {
+      guest: true
+    }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginPage,
     meta: {
       guest: true
     }
