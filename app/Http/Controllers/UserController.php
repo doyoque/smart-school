@@ -128,27 +128,28 @@ class UserController extends Controller
     }
 
     /**
-     * Check user exist.
+     * Delete user.
      *
+     * @param Illuminate\Http\Request $request
+     * @param App\Models\User $user
      * @return mixed
      */
-    private function unprocessable($method = null)
+    public function delete(Request $request, User $user)
     {
-        $data['code'] = Response::HTTP_UNPROCESSABLE_ENTITY;
-        switch ($method) {
-            case 'UPDATE':
-                $data['message'] = 'username already use.';
-                return response($data, $data['code']);
-            case 'CREATE':
-                $data['message'] = 'Email already in use.';
-                return response($data, $data['code']);
-            case 'SHOW':
-                $data['message'] = 'Unauthorized.';
-                return response($data, $data['code']);
-            case 'ERROR':
-                $data['code'] = Response::HTTP_INTERNAL_SERVER_ERROR;
-                $data['message'] = 'Internal server error.';
-                return response($data, $data['code']);
+        try {
+            if ($request->user()->school_id !== $user->school_id) {
+                return $this->unprocessable('DELETE');
+            }
+
+            if ($user->delete()) {
+                return response([
+                    'message' => 'User delete.',
+                    'code' => Response::HTTP_OK,
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
+            $this->unprocessable('ERROR');
         }
     }
 
@@ -164,6 +165,35 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
             $this->unprocessable('ERROR');
+        }
+    }
+
+    /**
+     * Response collection.
+     *
+     * @param string $method
+     * @return mixed
+     */
+    private function unprocessable($method = null)
+    {
+        $data['code'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        switch ($method) {
+            case 'UPDATE':
+                $data['message'] = 'username already use.';
+                return response($data, $data['code']);
+            case 'CREATE':
+                $data['message'] = 'Email already in use.';
+                return response($data, $data['code']);
+            case 'SHOW':
+                $data['message'] = 'Unauthorized.';
+                return response($data, $data['code']);
+            case 'DELETE':
+                $data['message'] = 'Cannot delete user from different school.';
+                return response($data, $data['code']);
+            case 'ERROR':
+                $data['code'] = Response::HTTP_INTERNAL_SERVER_ERROR;
+                $data['message'] = 'Internal server error.';
+                return response($data, $data['code']);
         }
     }
 }
