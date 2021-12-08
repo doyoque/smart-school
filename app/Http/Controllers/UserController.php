@@ -14,7 +14,26 @@ use App\Http\Resources\UserCollection;
 class UserController extends Controller
 {
     /**
-     * Store new useer.
+     * List user.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function index(Request $request)
+    {
+        try {
+            return UserCollection::collection(User::search($request->query())->paginate(10));
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
+            return response([
+                'message' => 'Internal server error.',
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    /**
+     * Store new user.
      *
      * @param App\Http\Requests\UserRequest $request
      * @return mixed
@@ -57,6 +76,13 @@ class UserController extends Controller
     public function show(User $user)
     {
         try {
+            if ($user->role_id > 1) {
+                return response([
+                    'message' => 'Unauthorized.',
+                    'code' => Response::HTTP_UNAUTHORIZED,
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
             return UserCollection::make($user);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());

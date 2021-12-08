@@ -16,6 +16,7 @@ class UserCollection extends JsonResource
     {
         return [
             'name' => $this->name,
+            'username' => $this->username,
             'role' => ['id' => $this->role->id, 'name' => $this->role->name,],
             'school' => ['id' => $this->school->id, 'name' => $this->school->name],
         ];

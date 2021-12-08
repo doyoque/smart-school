@@ -47,6 +47,27 @@ class User extends Authenticatable
     ];
 
     /**
+     * check if admin exists
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $filter
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSearch($query, $filter)
+    {
+        return $query->when($filter['name'], function ($query) use ($filter) {
+            $query->where('name', 'like', '%' . $filter['name'] . '%');
+        })->when($filter['username'], function ($query) use ($filter) {
+            $query->where('username', 'like', '%' . $filter['username'] . '%');
+        })->when($filter['role_id'], function ($query) use ($filter) {
+            $query->where('role_id', '=', $filter['role_id']);
+        })->when($filter['email'], function ($query) use ($filter) {
+            $query->where('email', 'like', '%' . $filter['email'] . '%');
+        });
+    }
+
+
+    /**
      * User belongs to Role
      *
      * @return this

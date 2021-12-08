@@ -97,4 +97,16 @@ class UserManagementTest extends TestCase
                 ]
             ]);
     }
+
+    /**
+     * School admin list user.
+     *
+     * @return void
+     * @test
+     */
+    public function school_admin_can_list_created_user()
+    {
+        $this->getJson('api/v1/user')
+            ->assertStatus(200);
+    }
 }
