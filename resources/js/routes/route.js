@@ -4,6 +4,7 @@ import IndexPage from '@pages/index.vue'
 import DashboardPage from '@pages/dashboard.vue'
 import SignupPage from '@pages/signup.vue'
 import LoginPage from '@pages/login.vue'
+import RegisterPage from '@pages/register.vue'
 
 Vue.use(VueRouter)
 
@@ -36,6 +37,14 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: DashboardPage,
+    meta: {
+      school_admin: true
+    }
+  },
+  {
+    path: '/create-user',
+    name: 'register',
+    component: RegisterPage,
     meta: {
       school_admin: true
     }

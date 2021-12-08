@@ -1,5 +1,12 @@
 <template>
   <div class="bg-white text-black font-bold rounded-lg border shadow-lg p-10">
+    <div class="grid grid-cols-5">
+      <router-link
+        to="/create-user"
+        class="bg-blue-500 hover:bg-blue-300 text-white text-center font-bold py-1 mb-2 px-4 rounded-lg"
+        >create user</router-link
+      >
+    </div>
     <table class="table-auto border-separate rounded-lg border border-blue-500">
       <tableHead
         :dataHeader="tableHeader"
@@ -8,7 +15,7 @@
       />
       <tableBody :dataBody="tableBody" />
     </table>
-    <pagination />
+    <!-- <pagination /> -->
   </div>
 </template>
 

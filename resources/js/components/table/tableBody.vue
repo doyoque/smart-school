@@ -13,13 +13,23 @@
       <td class="border border-blue-600 px-4">{{ item.username }}</td>
       <td class="border border-blue-600 px-4">{{ item.email }}</td>
       <td class="border border-blue-600 px-4">{{ item.created_at }}</td>
+      <td class="border border-blue-600 px-4">{{ item.updated_at }}</td>
       <td
         class="border border-blue-600 px-4"
         :class="[
           item.id === dataBody[dataBody.length - 1].id ? 'rounded-br-lg' : '',
         ]"
       >
-        {{ item.updated_at }}
+        <button
+          class="bg-green-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+        >
+          update
+        </button>
+        <button
+          class="bg-red-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+        >
+          delete
+        </button>
       </td>
     </tr>
   </tbody>
