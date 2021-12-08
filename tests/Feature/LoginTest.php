@@ -62,27 +62,4 @@ class LoginTest extends TestCase
                 'code',
             ]);
     }
-
-    /**
-     * Get user info.
-     *
-     * @return void
-     * @test
-     */
-    public function get_user_info_after_login()
-    {
-        Passport::actingAs(User::factory()->create([
-            'role_id' => 1,
-            'school_id' => 1,
-        ]));
-
-        $this->getJson('api/v1/user')
-            ->assertStatus(200)->assertJsonStructure([
-                'data' => [
-                    'name',
-                    'role' => ['id', 'name'],
-                    'school' => ['id', 'name'],
-                ]
-            ]);
-    }
 }

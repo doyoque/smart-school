@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\LoginRequest;
-use App\Http\Resources\UserCollection;
 
 class LoginController extends Controller
 {
@@ -40,24 +39,6 @@ class LoginController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " auth Exception" . $e->getMessage(), $e->getTrace());
-            return response([
-                'message' => $e->getMessage(),
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Get authenticated user info.
-     *
-     * @param Illuminate\Http\Request $request
-     * @return mixed
-     */
-    public function info(Request $request)
-    {
-        try {
-            return UserCollection::make($request->user());
-        } catch (\Exception $e) {
             return response([
                 'message' => $e->getMessage(),
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,

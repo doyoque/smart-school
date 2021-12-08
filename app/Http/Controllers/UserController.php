@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Role;
+use App\Http\Resources\UserCollection;
 
 class UserController extends Controller
 {
@@ -44,6 +45,25 @@ class UserController extends Controller
                 'message' => 'Internal server error.',
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ]);
+        }
+    }
+
+    /**
+     * Get authenticated user info.
+     *
+     * @param App\Models\User $user
+     * @return mixed
+     */
+    public function show(User $user)
+    {
+        try {
+            return UserCollection::make($user);
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
+            return response([
+                'message' => $e->getMessage(),
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

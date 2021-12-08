@@ -28,7 +28,7 @@ class UserManagementTest extends TestCase
 
         $this->artisan('passport:install');
 
-        $school = School::factory()->create();
+        School::factory()->create();
 
         Passport::actingAs(User::factory()->create([
             'role_id' => 1,
@@ -76,6 +76,25 @@ class UserManagementTest extends TestCase
             ->assertJsonStructure([
                 'message',
                 'code',
+            ]);
+    }
+
+    /**
+     * School admin show user.
+     *
+     * @return void
+     * @test
+     */
+    public function school_admin_can_view_user()
+    {
+        $this->getJson('api/v1/user/1')
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'data' => [
+                    'name',
+                    'role' => ['id', 'name'],
+                    'school' => ['id', 'name'],
+                ]
             ]);
     }
 }
