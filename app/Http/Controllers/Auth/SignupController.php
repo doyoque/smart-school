@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\School;
@@ -38,11 +39,8 @@ class SignupController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            if (User::where('email', '=', $request['email'])->count() > 0) {
-                return response([
-                    'message' => 'Cannot register with same email.',
-                    'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
-                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            if (User::email($request['email'])->count() > 0) {
+                return $this->unprocessable();
             }
 
             DB::beginTransaction();
@@ -67,10 +65,24 @@ class SignupController extends Controller
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             DB::rollback();
+            Log::error(__FUNCTION__ . " auth Exception" . $e->getMessage(), $e->getTrace());
             return response([
                 'message' => 'Internal server error.',
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Check user exist.
+     *
+     * @return mixed
+     */
+    private function unprocessable()
+    {
+        return response([
+            'message' => 'Cannot register with same email.',
+            'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

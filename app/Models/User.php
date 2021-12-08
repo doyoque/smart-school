@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -45,6 +46,57 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * User filter.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $filter
+     * @param integer $schoolId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSearch($query, $filter, $schoolId)
+    {
+        return $query->when($filter['name'], function ($query) use ($filter) {
+            $query->where('name', 'like', '%' . $filter['name'] . '%');
+        })->when($filter['username'], function ($query) use ($filter) {
+            $query->where('username', 'like', '%' . $filter['username'] . '%');
+        })->when($filter['role_id'], function ($query) use ($filter) {
+            $query->where('role_id', '=', $filter['role_id']);
+        })->when($filter['email'], function ($query) use ($filter) {
+            $query->where('email', 'like', '%' . $filter['email'] . '%');
+        })->where('school_id', '=', $schoolId)->where('role_id', '>', 1);
+    }
+
+    /**
+     * User by email.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $email
+     * @param integer $schoolId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeEmail($query, $email, $schoolId = null)
+    {
+        if ($schoolId) {
+            return $query->where('email', '=', $email)->where('school_id', '=', $schoolId);
+        }
+
+        return $query->where('email', '=', $email);
+    }
+
+    /**
+     * User by username.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $username
+     * @param integer $schoolId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUsername($query, $username, $schoolId = null)
+    {
+        return $query->where('username', '=', $username)->where('school_id', '<>', $schoolId);
+    }
 
     /**
      * User belongs to Role

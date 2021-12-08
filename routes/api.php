@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,12 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('login', [LoginController::class, 'login']);
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::get('user', [LoginController::class, 'info']);
+        Route::get('role', [UserController::class, 'roles']);
+
+        Route::get('user', [UserController::class, 'index']);
+        Route::get('user/{user}', [UserController::class, 'show']);
+        Route::put('user/{user}', [UserController::class, 'update']);
+        Route::delete('user/{user}', [UserController::class, 'delete']);
+        Route::post('user', [UserController::class, 'store']);
     });
 });

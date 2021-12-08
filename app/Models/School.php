@@ -17,4 +17,14 @@ class School extends Model
     protected $fillable = [
         'name',
     ];
+
+    /**
+     * School has many User
+     *
+     * @return this
+     */
+    public function users()
+    {
+        $this->hasMany(User::class);
+    }
 }
