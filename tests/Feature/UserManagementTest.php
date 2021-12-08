@@ -109,4 +109,32 @@ class UserManagementTest extends TestCase
         $this->getJson('api/v1/user')
             ->assertStatus(200);
     }
+
+    /**
+     * School admin update user.
+     *
+     * @return void
+     * @test
+     */
+    public function school_admin_can_update_user()
+    {
+        User::factory()->create([
+            'role_id' => 2,
+            'school_id' => 1,
+        ]);
+
+        $payload = [
+            'name' => 'udin',
+            'username' => 'udintest',
+            'email' => 'udin@email.com',
+            'role_id' => 2,
+        ];
+
+        $this->putJson('/api/v1/user/2', $payload)
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'message',
+                'code',
+            ]);
+    }
 }

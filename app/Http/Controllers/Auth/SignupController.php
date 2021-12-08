@@ -39,7 +39,9 @@ class SignupController extends Controller
                 ], Response::HTTP_UNPROCESSABLE_ENTITY);
             }
 
-            $this->userExist($request['email']);
+            if (User::email($request['email'])->count() > 0) {
+                return $this->unprocessable();
+            }
 
             DB::beginTransaction();
 
@@ -71,13 +73,16 @@ class SignupController extends Controller
         }
     }
 
-    private function userExist($email)
+    /**
+     * Check user exist.
+     *
+     * @return mixed
+     */
+    private function unprocessable()
     {
-        if (User::where('email', '=', $email)->count() > 0) {
-            return response([
-                'message' => 'Cannot register with same email.',
-                'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        return response([
+            'message' => 'Cannot register with same email.',
+            'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
+        ], Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

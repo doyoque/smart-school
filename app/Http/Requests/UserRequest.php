@@ -23,12 +23,23 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => ['required', 'string'],
-            'username' => ['required', 'string'],
-            'email' => ['required', 'string'],
-            'role_id' => ['required', 'numeric'],
-            'password' => ['required', 'min:8', 'max:255', 'string'],
-        ];
+        switch ($this->method()) {
+            case 'PUT':
+                return [
+                    'name' => ['required', 'string'],
+                    'username' => ['required', 'string'],
+                    'role_id' => ['required', 'numeric'],
+                ];
+            case 'POST':
+                return [
+                    'name' => ['required', 'string'],
+                    'username' => ['required', 'string'],
+                    'email' => ['required', 'string'],
+                    'role_id' => ['required', 'numeric'],
+                    'password' => ['required', 'min:8', 'max:255', 'string'],
+                ];
+            default:
+                break;
+        }
     }
 }

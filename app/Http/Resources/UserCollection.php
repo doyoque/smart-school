@@ -15,6 +15,7 @@ class UserCollection extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'username' => $this->username,
             'role' => ['id' => $this->role->id, 'name' => $this->role->name,],

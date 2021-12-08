@@ -10,6 +10,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Role;
 use App\Http\Resources\UserCollection;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 class UserController extends Controller
 {
@@ -22,7 +23,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         try {
-            return UserCollection::collection(User::search($request->query())->paginate(10));
+            $users = User::search($request->query(), $request->user()->school_id)->paginate(10);
+            return UserCollection::collection($users);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
             return response([
@@ -43,7 +45,12 @@ class UserController extends Controller
         try {
             $postData = $request->validated();
 
-            $this->userExist($request['email']);
+            if (
+                User::email($postData['email'], $request->user()->school_id)->count() > 0 ||
+                User::email($postData['email'])->count() === 1
+            ) {
+                return $this->unprocessable('CREATE');
+            }
 
             User::create([
                 'name' => $postData['name'],
@@ -60,10 +67,7 @@ class UserController extends Controller
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
-            return response([
-                'message' => 'Internal server error.',
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            ]);
+            return $this->unprocessable('ERROR');
         }
     }
 
@@ -71,25 +75,80 @@ class UserController extends Controller
      * Get authenticated user info.
      *
      * @param App\Models\User $user
+     * @param Illuminate\Http\Request $request
      * @return mixed
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
         try {
-            if ($user->role_id > 1) {
-                return response([
-                    'message' => 'Unauthorized.',
-                    'code' => Response::HTTP_UNAUTHORIZED,
-                ], Response::HTTP_UNAUTHORIZED);
+            if (
+                $request->user()->roie_id > 1 ||
+                ($request->user()->school_id !== $user->school_id)
+            ) {
+                $this->unprocessable('SHOW');
             }
 
             return UserCollection::make($user);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
-            return response([
-                'message' => $e->getMessage(),
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->unprocessable('ERROR');
+        }
+    }
+
+    /**
+     * Update user.
+     *
+     * @param App\Http\Requests\UserRequest $request
+     * @param App\Models\User $user
+     * @return mixed
+     */
+    public function update(UserRequest $request, User $user)
+    {
+        try {
+            $postData = $request->validated();
+
+            if (User::username($postData['username'], $user->school_id)->count() > 0) {
+                $this->unprocessable('UPDATE');
+            }
+
+            $user->name = $postData['name'];
+            $user->username = $postData['username'];
+            $user->role_id = $postData['role_id'];
+
+            if ($user->update()) {
+                return response([
+                    'message' => 'User has been update.',
+                    'code' => Response::HTTP_OK,
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
+            $this->unprocessable('ERROR');
+        }
+    }
+
+    /**
+     * Check user exist.
+     *
+     * @return mixed
+     */
+    private function unprocessable($method = null)
+    {
+        $data['code'] = Response::HTTP_UNPROCESSABLE_ENTITY;
+        switch ($method) {
+            case 'UPDATE':
+                $data['message'] = 'username already use.';
+                return response($data, $data['code']);
+            case 'CREATE':
+                $data['message'] = 'Email already in use.';
+                return response($data, $data['code']);
+            case 'SHOW':
+                $data['message'] = 'Unauthorized.';
+                return response($data, $data['code']);
+            case 'ERROR':
+                $data['code'] = Response::HTTP_INTERNAL_SERVER_ERROR;
+                $data['message'] = 'Internal server error.';
+                return response($data, $data['code']);
         }
     }
 
@@ -104,20 +163,7 @@ class UserController extends Controller
             return Role::where('id', '>', 1)->get();
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
-            return response([
-                'message' => 'Internal server error.',
-                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
-            ]);
-        }
-    }
-
-    private function userExist($email)
-    {
-        if (User::where('email', '=', $email)->count() > 0) {
-            return response([
-                'message' => 'Cannot register with same email.',
-                'code' => Response::HTTP_UNPROCESSABLE_ENTITY,
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->unprocessable('ERROR');
         }
     }
 }

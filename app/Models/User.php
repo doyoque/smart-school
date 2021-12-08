@@ -47,13 +47,14 @@ class User extends Authenticatable
     ];
 
     /**
-     * check if admin exists
+     * User filter.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param array $filter
+     * @param integer $schoolId
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSearch($query, $filter)
+    public function scopeSearch($query, $filter, $schoolId)
     {
         return $query->when($filter['name'], function ($query) use ($filter) {
             $query->where('name', 'like', '%' . $filter['name'] . '%');
@@ -63,9 +64,38 @@ class User extends Authenticatable
             $query->where('role_id', '=', $filter['role_id']);
         })->when($filter['email'], function ($query) use ($filter) {
             $query->where('email', 'like', '%' . $filter['email'] . '%');
-        });
+        })->where('school_id', '=', $schoolId)->where('role_id', '>', 1);
     }
 
+    /**
+     * User by email.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $email
+     * @param integer $schoolId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeEmail($query, $email, $schoolId = null)
+    {
+        if ($schoolId) {
+            return $query->where('email', '=', $email)->where('school_id', '=', $schoolId);
+        }
+
+        return $query->where('email', '=', $email);
+    }
+
+    /**
+     * User by username.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $username
+     * @param integer $schoolId
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUsername($query, $username, $schoolId = null)
+    {
+        return $query->where('username', '=', $username)->where('school_id', '<>', $schoolId);
+    }
 
     /**
      * User belongs to Role

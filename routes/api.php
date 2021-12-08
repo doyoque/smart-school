@@ -25,6 +25,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::get('user', [UserController::class, 'index']);
         Route::get('user/{user}', [UserController::class, 'show']);
+        Route::put('user/{user}', [UserController::class, 'update']);
         Route::post('user', [UserController::class, 'store']);
     });
 });
