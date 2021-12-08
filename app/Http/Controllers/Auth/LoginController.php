@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\UserCollection;
 
@@ -38,6 +39,7 @@ class LoginController extends Controller
                 'code' => Response::HTTP_UNAUTHORIZED,
             ], Response::HTTP_UNAUTHORIZED);
         } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " auth Exception" . $e->getMessage(), $e->getTrace());
             return response([
                 'message' => $e->getMessage(),
                 'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
