@@ -5,6 +5,7 @@ import DashboardPage from '@pages/dashboard.vue'
 import SignupPage from '@pages/signup.vue'
 import LoginPage from '@pages/login.vue'
 import RegisterPage from '@pages/register.vue'
+import UpdatePage from '@pages/update.vue'
 
 Vue.use(VueRouter)
 
@@ -45,6 +46,14 @@ const routes = [
     path: '/create-user',
     name: 'register',
     component: RegisterPage,
+    meta: {
+      school_admin: true
+    }
+  },
+  {
+    path: '/update-user/:id',
+    name: 'update',
+    component: UpdatePage,
     meta: {
       school_admin: true
     }

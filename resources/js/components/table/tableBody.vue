@@ -20,13 +20,14 @@
           item.id === dataBody[dataBody.length - 1].id ? 'rounded-br-lg' : '',
         ]"
       >
-        <button
+        <router-link
           class="bg-green-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+          :to="{ name: 'update', params: { id: item.id } }"
+          >update</router-link
         >
-          update
-        </button>
         <button
           class="bg-red-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+          @click="removeUser(item.id)"
         >
           delete
         </button>
@@ -36,10 +37,23 @@
 </template>
 
 <script>
+import router from "@/routes/route";
+
 export default {
   name: "tableBody",
   props: {
     dataBody: Array,
+  },
+  methods: {
+    async removeUser(id) {
+      await axios
+        .delete(`/api/v1/user/${id}`)
+        .then((res) => {
+          router.push({ name: "dashboard" }).catch(() => {});
+        })
+        .catch((err) => console.log(err));
+      console.log(id);
+    },
   },
 };
 </script>
