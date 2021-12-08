@@ -49,10 +49,9 @@ export default {
       await axios
         .delete(`/api/v1/user/${id}`)
         .then((res) => {
-          router.push({ name: "dashboard" }).catch(() => {});
+          window.location.reload();
         })
         .catch((err) => console.log(err));
-      console.log(id);
     },
   },
 };

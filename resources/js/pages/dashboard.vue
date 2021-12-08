@@ -59,8 +59,5 @@ export default {
     });
     this.tableBody = res.data;
   },
-  mounted() {
-    console.log("dashboard working");
-  },
 };
 </script>
