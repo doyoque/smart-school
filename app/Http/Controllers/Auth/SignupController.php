@@ -47,7 +47,7 @@ class SignupController extends Controller
 
             $school = School::create(['name' => $request['school_name']]);
 
-            $user = User::create([
+            User::create([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'password' => Hash::make($request['password']),
@@ -60,7 +60,6 @@ class SignupController extends Controller
             DB::commit();
             return response([
                 'message' => 'signup.',
-                'token' => $user->createToken('sSchool')->accessToken,
                 'code' => Response::HTTP_CREATED,
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {

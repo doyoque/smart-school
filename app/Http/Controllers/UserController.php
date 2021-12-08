@@ -64,6 +64,12 @@ class UserController extends Controller
             dispatch(new ProcessInvitationEmail([
                 'receiver' => $user->email,
                 'name' => $user->name,
+                'username' => $user->username,
+                'school_id' => $request->user()->school_id,
+                'password' => $postData['password'],
+                'url' => config('app.env') === 'local' ?
+                    config('app.url') . ':3000/login' :
+                    config('app.url') . '/login'
             ]));
 
             return response([
