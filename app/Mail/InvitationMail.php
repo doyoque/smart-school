@@ -5,6 +5,7 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class InvitationMail extends Mailable
 {
@@ -32,7 +33,11 @@ class InvitationMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('School System Invitation')
-            ->view('emails.invitation');
+        try {
+            return $this->subject('School System Invitation')
+                ->view('emails.invitation');
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " InvitationMail Exception" . $e->getMessage(), $e->getTrace());
+        }
     }
 }

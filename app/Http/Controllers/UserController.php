@@ -10,7 +10,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Models\Role;
 use App\Http\Resources\UserCollection;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use App\Jobs\ProcessInvitationEmail;
 
 class UserController extends Controller
 {
@@ -52,7 +52,7 @@ class UserController extends Controller
                 return $this->unprocessable('CREATE');
             }
 
-            User::create([
+            $user = User::create([
                 'name' => $postData['name'],
                 'username' => $postData['username'],
                 'email' => $postData['email'],
@@ -60,6 +60,11 @@ class UserController extends Controller
                 'school_id' => $request->user()->school_id,
                 'password' => Hash::make($postData['password']),
             ]);
+
+            dispatch(new ProcessInvitationEmail([
+                'receiver' => $user->email,
+                'name' => $user->name,
+            ]));
 
             return response([
                 'message' => 'User created.',
