@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
 
 class UserCollection extends JsonResource
 {
@@ -18,6 +19,9 @@ class UserCollection extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'username' => $this->username,
+            'email' => $this->email,
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d'),
             'role' => ['id' => $this->role->id, 'name' => $this->role->name,],
             'school' => ['id' => $this->school->id, 'name' => $this->school->name],
         ];

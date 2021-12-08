@@ -51,7 +51,7 @@ RUN set -ex \
     libpng-dev \
     libxml2-dev \
     git \
-    postgresql-dev \
+    supervisor \
     && docker-php-ext-configure gd \
     --with-freetype=/usr/include/ \
     --with-jpeg=/usr/include/ \
@@ -67,3 +67,12 @@ RUN set -ex \
 EXPOSE 9003
 
 COPY ./conf.d/*.ini /usr/local/etc/php/conf.d/
+
+#--------------------------------------------------
+# Supervisord
+#--------------------------------------------------
+RUN mkdir -p /var/log/supervisor && mkdir -p /etc/supervisor.d/
+
+COPY ./supervisord/supervisord.conf /etc/supervisord.conf
+
+ENTRYPOINT [ "/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf" ]

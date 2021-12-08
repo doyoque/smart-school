@@ -3,7 +3,7 @@
     <div class="container mx-auto py-8">
       <div class="w-5/6 lg:w-1/2 mx-auto bg-white rounded shadow">
         <div class="py-4 px-8 text-black text-xl border-b border-grey-lighter">
-          Register first
+          Create User for student/teacher
         </div>
         <div class="py-4 px-8">
           <div class="flex mb-4">
@@ -21,6 +21,23 @@
                 v-model="name"
               />
             </div>
+            <div class="w-1/2 mr-1">
+              <label
+                class="block text-grey-darker text-sm font-bold mb-2"
+                for="role"
+                >Role</label
+              >
+              <select
+                v-model="role_id"
+                id="roles"
+                class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+              >
+                <option value="">-- select role --</option>
+                <option v-for="role in roles" :key="role.id" :value="role.id">
+                  {{ role.name }}
+                </option>
+              </select>
+            </div>
             <div class="w-1/2 ml-1">
               <label
                 class="block text-grey-darker text-sm font-bold mb-2"
@@ -35,20 +52,6 @@
                 v-model="username"
               />
             </div>
-          </div>
-          <div class="mb-4">
-            <label
-              class="block text-grey-darker text-sm font-bold mb-2"
-              for="school_name"
-              >School name</label
-            >
-            <input
-              class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-              id="school_name"
-              type="text"
-              placeholder="Your school name"
-              v-model="school_name"
-            />
           </div>
           <div class="mb-4">
             <label
@@ -83,53 +86,57 @@
             <button
               class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full"
               type="button"
-              @click="register"
+              @click="create"
             >
-              Sign Up
+              Create User
             </button>
           </div>
         </div>
       </div>
-      <p class="text-center my-4">
-        <router-link
-          to="/login"
-          class="text-grey-dark text-sm no-underline hover:text-grey-darker"
-          >I already have an account</router-link
-        >
-      </p>
     </div>
   </div>
 </template>
+
 <script>
+import router from "@/routes/route";
+
 export default {
-  name: "signup",
+  name: "register",
   data() {
     return {
       name: "",
       username: "",
       email: "",
+      role_id: "",
       password: "",
-      school_name: "",
+      roles: null,
     };
   },
+  async created() {
+    const roles = await axios.get(`/api/v1/role`).catch((err) => {
+      console.log(err);
+    });
+
+    this.roles = roles;
+  },
   methods: {
-    async register() {
+    async create() {
       let payload = {
         name: this.name,
         username: this.username,
-        password: this.password,
         email: this.email,
-        school_name: this.school_name,
+        password: this.password,
+        role_id: this.role_id,
       };
 
       await axios
-        .post(`/api/v1/signup`, payload)
+        .post(`/api/v1/user`, payload)
         .then((res) => {
-          localStorage.setItem("token", res.token);
+          router.push({ name: "dashboard" }).catch(() => {});
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.log(err));
+
+      console.log(payload);
     },
   },
 };

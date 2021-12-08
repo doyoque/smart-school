@@ -61,10 +61,10 @@
         </div>
       </div>
       <p class="text-center my-4">
-        <a
-          href="#"
+        <router-link
+          to="/signup"
           class="text-grey-dark text-sm no-underline hover:text-grey-darker"
-          >I already have an account</a
+          >Sign up</router-link
         >
       </p>
     </div>

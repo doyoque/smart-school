@@ -42,7 +42,6 @@ class SignupTest extends TestCase
             ->assertStatus(201)
             ->assertJsonStructure([
                 'message',
-                'token',
                 'code',
             ]);
 
