@@ -11,7 +11,9 @@
       </td>
       <td class="border border-blue-600 px-4">{{ item.role.name }}</td>
       <td class="border border-blue-600 px-4">{{ item.username }}</td>
-      <td class="border border-blue-600 px-4">{{ item.email }}</td>
+      <td class="border border-blue-600 px-4">
+        {{ emailReplace(item.email) }}
+      </td>
       <td class="border border-blue-600 px-4">{{ item.created_at }}</td>
       <td class="border border-blue-600 px-4">{{ item.updated_at }}</td>
       <td
@@ -56,6 +58,10 @@ export default {
           window.location.reload();
         })
         .catch((err) => console.log(err));
+    },
+
+    emailReplace(email) {
+      return email.length > 24 ? email.substring(0, 24) + "..." : email;
     },
   },
 };

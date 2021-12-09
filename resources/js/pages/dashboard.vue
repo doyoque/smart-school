@@ -15,7 +15,11 @@
       />
       <tableBody :dataBody="tableBody" />
     </table>
-    <!-- <pagination /> -->
+    <pagination
+      :pagination="pagination"
+      @paginate="getUser(queryParams())"
+      :offset="4"
+    />
   </div>
 </template>
 
@@ -26,6 +30,11 @@ import TableBody from "@components/table/tableBody.vue";
 
 export default {
   name: "dashboard",
+  components: {
+    Pagination,
+    TableHead,
+    TableBody,
+  },
   data() {
     return {
       tableHeader: [
@@ -42,27 +51,34 @@ export default {
         username: "",
         email: "",
         role_id: "",
+        page: "",
       },
       tableBody: null,
+      pagination: {},
+      offset: 4,
     };
   },
-  components: {
-    Pagination,
-    TableHead,
-    TableBody,
-  },
-  async created() {
-    const res = await this.getUser(this.queryParams());
-    this.tableBody = res.data;
+  created() {
+    this.getUser(this.queryParams());
   },
   methods: {
     queryParams() {
+      let currentPage = this.pagination.current_page;
+      let pageNum = currentPage ? currentPage : 1;
+      this.searchParams.page = pageNum;
+
       return new URLSearchParams(this.searchParams).toString();
     },
-    getUser(params) {
-      return axios.get(`/api/v1/user?${params}`).catch((err) => {
-        console.log(err);
-      });
+    async getUser(params) {
+      await axios
+        .get(`/api/v1/user?${params}`)
+        .then((res) => {
+          this.tableBody = res.data;
+          this.pagination = res.meta;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
 };
