@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white text-black font-bold rounded-lg border shadow-lg p-10">
-    <div class="grid grid-cols-5">
+    <div class="grid grid-cols-8">
       <router-link
         to="/create-user"
         class="bg-blue-500 hover:bg-blue-300 text-white text-center font-bold py-1 mb-2 px-4 rounded-lg"
@@ -52,12 +52,18 @@ export default {
     TableBody,
   },
   async created() {
-    const params = new URLSearchParams(this.searchParams).toString();
-
-    const res = await axios.get(`/api/v1/user?${params}`).catch((err) => {
-      console.log(err);
-    });
+    const res = await this.getUser(this.queryParams());
     this.tableBody = res.data;
+  },
+  methods: {
+    queryParams() {
+      return new URLSearchParams(this.searchParams).toString();
+    },
+    getUser(params) {
+      return axios.get(`/api/v1/user?${params}`).catch((err) => {
+        console.log(err);
+      });
+    },
   },
 };
 </script>

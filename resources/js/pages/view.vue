@@ -3,7 +3,7 @@
     <div class="container mx-auto py-8">
       <div class="w-5/6 lg:w-1/2 mx-auto bg-white rounded shadow">
         <div class="py-4 px-8 text-black text-xl border-b border-grey-lighter">
-          Create User for student/teacher
+          Detail User
         </div>
         <div class="py-4 px-8">
           <div class="flex mb-4">
@@ -17,6 +17,7 @@
                 class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                 id="name"
                 type="text"
+                disabled
                 placeholder="Your full name"
                 v-model="name"
               />
@@ -24,19 +25,17 @@
             <div class="w-1/2 mr-1">
               <label
                 class="block text-grey-darker text-sm font-bold mb-2"
-                for="role"
+                for="name"
                 >Role</label
               >
-              <select
-                v-model="role_id"
-                id="roles"
+              <input
                 class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-              >
-                <option value="">-- select role --</option>
-                <option v-for="role in roles" :key="role.id" :value="role.id">
-                  {{ role.name }}
-                </option>
-              </select>
+                id="role"
+                type="text"
+                disabled
+                placeholder="Your full name"
+                v-model="role.name"
+              />
             </div>
             <div class="w-1/2 ml-1">
               <label
@@ -48,10 +47,26 @@
                 class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
                 id="username"
                 type="text"
+                disabled
                 placeholder="Your username for this account"
                 v-model="username"
               />
             </div>
+          </div>
+          <div class="mb-4">
+            <label
+              class="block text-grey-darker text-sm font-bold mb-2"
+              for="school_name"
+              >School name</label
+            >
+            <input
+              class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
+              id="school_name"
+              type="text"
+              disabled
+              placeholder="Your school name"
+              v-model="school.name"
+            />
           </div>
           <div class="mb-4">
             <label
@@ -63,24 +78,10 @@
               class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
               id="email"
               type="email"
+              disabled
               placeholder="Your email address"
               v-model="email"
             />
-          </div>
-          <div class="mb-4">
-            <label
-              class="block text-grey-darker text-sm font-bold mb-2"
-              for="password"
-              >Password</label
-            >
-            <input
-              class="appearance-none border rounded w-full py-2 px-3 text-grey-darker"
-              id="password"
-              type="password"
-              placeholder="Your secure password"
-              v-model="password"
-            />
-            <p class="text-grey text-xs mt-1">At least 8 characters</p>
           </div>
           <div class="flex items-center justify-between mt-8">
             <router-link
@@ -88,13 +89,11 @@
               class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-lg"
               >back</router-link
             >
-            <button
-              class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-lg"
-              type="button"
-              @click="create"
+            <router-link
+              :to="{ name: 'update', params: { id: id } }"
+              class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
+              >update</router-link
             >
-              Create User
-            </button>
           </div>
         </div>
       </div>
@@ -103,45 +102,36 @@
 </template>
 
 <script>
-import router from "@/routes/route";
-
 export default {
-  name: "register",
+  name: "detail",
   data() {
     return {
+      id: "",
       name: "",
       username: "",
       email: "",
-      role_id: "",
-      password: "",
-      roles: null,
+      role: {
+        name: "",
+      },
+      school: {
+        name: "",
+      },
     };
   },
   async created() {
-    const roles = await axios.get(`/api/v1/role`).catch((err) => {
-      console.log(err);
-    });
-
-    this.roles = roles;
+    const { data } = await this.detailUser(this.$route.params.id);
+    this.id = data.id;
+    this.name = data.name;
+    this.username = data.username;
+    this.email = data.email;
+    this.role.name = data.role.name;
+    this.school.name = data.school.name;
   },
   methods: {
-    async create() {
-      let payload = {
-        name: this.name,
-        username: this.username,
-        email: this.email,
-        password: this.password,
-        role_id: this.role_id,
-      };
-
-      await axios
-        .post(`/api/v1/user`, payload)
-        .then((res) => {
-          router.push({ name: "dashboard" }).catch(() => {});
-        })
-        .catch((err) => console.log(err));
-
-      console.log(payload);
+    detailUser(id) {
+      return axios.get(`/api/v1/user/${id}`).catch((err) => {
+        console.log(err);
+      });
     },
   },
 };

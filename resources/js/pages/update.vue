@@ -54,8 +54,13 @@
             </div>
           </div>
           <div class="flex items-center justify-between mt-8">
+            <router-link
+              to="/dashboard"
+              class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-lg"
+              >back</router-link
+            >
             <button
-              class="bg-blue-500 hover:bg-blue-300 text-white font-bold py-2 px-4 rounded-full"
+              class="bg-green-500 hover:bg-green-300 text-white font-bold py-2 px-4 rounded-lg"
               type="button"
               @click="update"
             >
