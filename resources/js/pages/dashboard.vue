@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white text-black font-bold rounded-lg border shadow-lg p-10">
-    <div class="grid grid-cols-5">
+    <div class="grid grid-cols-8">
       <router-link
         to="/create-user"
         class="bg-blue-500 hover:bg-blue-300 text-white text-center font-bold py-1 mb-2 px-4 rounded-lg"
@@ -15,7 +15,11 @@
       />
       <tableBody :dataBody="tableBody" />
     </table>
-    <!-- <pagination /> -->
+    <pagination
+      :pagination="pagination"
+      @paginate="getUser(queryParams())"
+      :offset="4"
+    />
   </div>
 </template>
 
@@ -26,6 +30,11 @@ import TableBody from "@components/table/tableBody.vue";
 
 export default {
   name: "dashboard",
+  components: {
+    Pagination,
+    TableHead,
+    TableBody,
+  },
   data() {
     return {
       tableHeader: [
@@ -42,22 +51,35 @@ export default {
         username: "",
         email: "",
         role_id: "",
+        page: "",
       },
       tableBody: null,
+      pagination: {},
+      offset: 4,
     };
   },
-  components: {
-    Pagination,
-    TableHead,
-    TableBody,
+  created() {
+    this.getUser(this.queryParams());
   },
-  async created() {
-    const params = new URLSearchParams(this.searchParams).toString();
+  methods: {
+    queryParams() {
+      let currentPage = this.pagination.current_page;
+      let pageNum = currentPage ? currentPage : 1;
+      this.searchParams.page = pageNum;
 
-    const res = await axios.get(`/api/v1/user?${params}`).catch((err) => {
-      console.log(err);
-    });
-    this.tableBody = res.data;
+      return new URLSearchParams(this.searchParams).toString();
+    },
+    async getUser(params) {
+      await axios
+        .get(`/api/v1/user?${params}`)
+        .then((res) => {
+          this.tableBody = res.data;
+          this.pagination = res.meta;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
 };
 </script>

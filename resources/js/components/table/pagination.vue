@@ -1,96 +1,80 @@
 <template>
-  <nav
-    class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px pt-2"
-    aria-label="Pagination"
+  <ul
+    class="flex list-reset border border-grey-light rounded w-auto mt-2 font-sans"
   >
-    <a
-      href="#"
-      class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-    >
-      <span class="sr-only">Previous</span>
-      <!-- Heroicon name: solid/chevron-left -->
-      <svg
-        class="h-5 w-5"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
+    <li v-if="pagination.current_page > 1">
+      <a
+        class="block hover:text-white hover:bg-blue-500 text-black border-r px-3 py-2"
+        style="cursor: pointer"
+        @click.prevent="change(pagination.current_page - 1)"
       >
-        <path
-          fill-rule="evenodd"
-          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </a>
-    <!-- Current: "z-10 bg-indigo-50 border-indigo-500 text-indigo-600", Default: "bg-white border-gray-300 text-gray-500 hover:bg-gray-50" -->
-    <a
-      href="#"
-      aria-current="page"
-      class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-    >
-      1
-    </a>
-    <a
-      href="#"
-      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-    >
-      2
-    </a>
-    <a
-      href="#"
-      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium"
-    >
-      3
-    </a>
-    <span
-      class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-    >
-      ...
-    </span>
-    <a
-      href="#"
-      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium"
-    >
-      8
-    </a>
-    <a
-      href="#"
-      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-    >
-      9
-    </a>
-    <a
-      href="#"
-      class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"
-    >
-      10
-    </a>
-    <a
-      href="#"
-      class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-    >
-      <span class="sr-only">Next</span>
-      <!-- Heroicon name: solid/chevron-right -->
-      <svg
-        class="h-5 w-5"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-        aria-hidden="true"
+        Previous
+      </a>
+    </li>
+    <li v-for="page in pages" :key="page">
+      <a
+        :class="[
+          page == pagination.current_page
+            ? 'text-white bg-blue-500 border-r'
+            : 'hover:text-white hover:bg-blue-500 border-r border-grey-light',
+          'block px-3 py-2',
+        ]"
+        style="cursor: pointer"
+        @click.stop="change(page)"
       >
-        <path
-          fill-rule="evenodd"
-          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-    </a>
-  </nav>
+        {{ page }}
+      </a>
+    </li>
+    <li v-if="pagination.current_page < pagination.last_page">
+      <a
+        class="block hover:text-white hover:bg-blue-500 px-3 py-2"
+        style="cursor: pointer"
+        @click.prevent="change(pagination.current_page + 1)"
+      >
+        Next
+      </a>
+    </li>
+  </ul>
 </template>
 
 <script>
 export default {
   name: "pagination",
+  props: {
+    pagination: {
+      type: Object,
+      required: true,
+    },
+    offset: {
+      type: Number,
+      default: 4,
+    },
+  },
+  computed: {
+    pages() {
+      if (!this.pagination.to) {
+        return null;
+      }
+      let from = this.pagination.current_page - this.offset;
+      if (from < 1) {
+        from = 1;
+      }
+      let to = from + this.offset * 2;
+      if (to >= this.pagination.last_page) {
+        to = this.pagination.last_page;
+      }
+      let pages = [];
+      for (let page = from; page <= to; page++) {
+        pages.push(page);
+      }
+      return pages;
+    },
+  },
+  methods: {
+    change: function (page) {
+      this.pagination.current_page = page;
+      this.$emit("paginate");
+    },
+  },
 };
 </script>
