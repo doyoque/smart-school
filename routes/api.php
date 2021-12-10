@@ -28,5 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::put('user/{user}', [UserController::class, 'update']);
         Route::delete('user/{user}', [UserController::class, 'delete']);
         Route::post('user', [UserController::class, 'store']);
+
+        Route::post('logout', [LoginController::class, 'logout']);
     });
 });

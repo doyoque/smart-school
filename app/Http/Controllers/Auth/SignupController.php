@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\School;
+use App\Jobs\ProcessInvitationEmail;
 
 class SignupController extends Controller
 {
@@ -47,7 +48,7 @@ class SignupController extends Controller
 
             $school = School::create(['name' => $request['school_name']]);
 
-            User::create([
+            $user = User::create([
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'password' => Hash::make($request['password']),
@@ -58,6 +59,18 @@ class SignupController extends Controller
             ]);
 
             DB::commit();
+            dispatch(new ProcessInvitationEmail(
+                [
+                    'receiver' => $user->email,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'school_id' => $school->id,
+                    'password' => $request['password'],
+                    'url' => config('app.env') === 'local' ?
+                        config('app.url') . ':3000/login' :
+                        config('app.url') . '/login',
+                ]
+            ));
             return response([
                 'message' => 'signup.',
                 'code' => Response::HTTP_CREATED,

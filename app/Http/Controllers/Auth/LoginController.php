@@ -45,4 +45,30 @@ class LoginController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Handling user logout.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function logout(Request $request)
+    {
+        try {
+            if (Auth::check()) {
+                Auth::user()->token()->revoke();
+
+                return response([
+                    'message' => 'Log out.',
+                    'code' => Response::HTTP_OK,
+                ], Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " auth Exception" . $e->getMessage(), $e->getTrace());
+            return response([
+                'message' => $e->getMessage(),
+                'code' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

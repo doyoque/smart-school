@@ -3,7 +3,7 @@
     <div class="container mx-auto py-8">
       <div class="w-5/6 lg:w-1/2 mx-auto bg-white rounded shadow">
         <div class="py-4 px-8 text-black text-xl border-b border-grey-lighter">
-          Register first
+          Sign up for administration
         </div>
         <div class="py-4 px-8">
           <div class="flex mb-4">
@@ -101,6 +101,8 @@
   </div>
 </template>
 <script>
+import router from "@/routes/route";
+
 export default {
   name: "signup",
   data() {
@@ -125,7 +127,7 @@ export default {
       await axios
         .post(`/api/v1/signup`, payload)
         .then((res) => {
-          localStorage.setItem("token", res.token);
+          router.push({ name: "login" }).catch(() => {});
         })
         .catch((err) => {
           console.log(err);

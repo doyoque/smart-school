@@ -23,8 +23,16 @@ class UserController extends Controller
     public function index(Request $request)
     {
         try {
-            $users = User::search($request->query(), $request->user()->school_id)->paginate(10);
-            return UserCollection::collection($users);
+            $userId = $request->user()->role_id;
+            $users = User::search($request->query(), $request->user()->school_id);
+
+            if ($userId === 3) {
+                $users = $users->where('role_id', '=', 3)->paginate(10);
+                return UserCollection::collection($users);
+            } else {
+                $users = $users->where('role_id', '>', 1)->paginate(10);
+                return UserCollection::collection($users);
+            }
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
             return response([

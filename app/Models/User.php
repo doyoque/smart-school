@@ -65,7 +65,7 @@ class User extends Authenticatable
             $query->where('role_id', '=', $filter['role_id']);
         })->when($filter['email'], function ($query) use ($filter) {
             $query->where('email', 'like', '%' . $filter['email'] . '%');
-        })->where('school_id', '=', $schoolId)->where('role_id', '>', 1);
+        })->where('school_id', '=', $schoolId);
     }
 
     /**
