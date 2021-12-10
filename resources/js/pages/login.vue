@@ -72,6 +72,8 @@
 </template>
 
 <script>
+import router from "@/routes/route";
+
 export default {
   name: "login",
   data() {
@@ -92,8 +94,11 @@ export default {
       await axios
         .post(`api/v1/login`, payload)
         .then((res) => {
-          localStorage.setItem("token", res.token);
-          localStorage.setItem("role", res.role);
+          if (res.code === 200) {
+            localStorage.setItem("token", res.token);
+            localStorage.setItem("role", res.role);
+            window.location.href = "/dashboard";
+          }
         })
         .catch((err) => {
           console.log(err);

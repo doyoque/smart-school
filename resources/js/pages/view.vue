@@ -90,6 +90,7 @@
               >back</router-link
             >
             <router-link
+              v-if="getRole() === 'school_admin'"
               :to="{ name: 'update', params: { id: id } }"
               class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg"
               >update</router-link
@@ -132,6 +133,9 @@ export default {
       return axios.get(`/api/v1/user/${id}`).catch((err) => {
         console.log(err);
       });
+    },
+    getRole() {
+      return localStorage.getItem("role");
     },
   },
 };

@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 class UserFactory extends Factory
 {
@@ -21,7 +22,7 @@ class UserFactory extends Factory
             'role_id' => $this->faker->numberBetween(1, 3),
             'school_id' => $this->faker->numberBetween(1, 5),
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'password' => Hash::make('secret123'), // password
             'remember_token' => Str::random(10),
         ];
     }

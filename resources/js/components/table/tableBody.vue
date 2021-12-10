@@ -22,23 +22,32 @@
           item.id === dataBody[dataBody.length - 1].id ? 'rounded-br-lg' : '',
         ]"
       >
-        <router-link
-          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
-          :to="{ name: 'detail', params: { id: item.id } }"
-          >view</router-link
-        >
-        <router-link
-          class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
-          :to="{ name: 'update', params: { id: item.id } }"
-          >update</router-link
-        >
-        <a
-          class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
-          style="cursor: pointer"
-          @click="removeUser(item.id)"
-        >
-          delete
-        </a>
+        <div v-if="role === 'school_admin'">
+          <router-link
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+            :to="{ name: 'detail', params: { id: item.id } }"
+            >view</router-link
+          >
+          <router-link
+            class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
+            :to="{ name: 'update', params: { id: item.id } }"
+            >update</router-link
+          >
+          <a
+            class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+            style="cursor: pointer"
+            @click="removeUser(item.id)"
+          >
+            delete
+          </a>
+        </div>
+        <div v-else>
+          <router-link
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded"
+            :to="{ name: 'detail', params: { id: item.id } }"
+            >view</router-link
+          >
+        </div>
       </td>
     </tr>
   </tbody>
@@ -49,6 +58,7 @@ export default {
   name: "tableBody",
   props: {
     dataBody: Array,
+    role: String,
   },
   methods: {
     async removeUser(id) {
