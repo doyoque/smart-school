@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Models\Message;
 
-class MessageEvent
+class MessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -48,6 +48,6 @@ class MessageEvent
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('message-channel');
+        return new PrivateChannel('chat');
     }
 }

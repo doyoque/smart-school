@@ -143,6 +143,7 @@ export default {
           router.push({ name: "index" }).catch(() => {});
           localStorage.removeItem("token");
           localStorage.removeItem("role");
+          localStorage.removeItem("user");
         }
       });
     },

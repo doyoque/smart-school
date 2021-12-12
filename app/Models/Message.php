@@ -10,6 +10,13 @@ class Message extends Model
     use HasFactory;
 
     /**
+     * Fields that are mass assignable
+     *
+     * @var array
+     */
+    protected $fillable = ['message'];
+
+    /**
      * A Messages belong to User
      *
      * @return this
