@@ -26,6 +26,11 @@ class LoginController extends Controller
                 $user = Auth::user();
 
                 $data['message'] = 'Logged in.';
+                $data['user'] = [
+                    'name' => $user->name,
+                    'usernmae' => $user->username,
+                    'email' => $user->email,
+                ];
                 $data['role'] = $user->role->name;
                 $data['token'] = $user->createToken('sSchool')->accessToken;
                 $data['code'] = Response::HTTP_OK;

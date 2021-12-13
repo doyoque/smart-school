@@ -18,3 +18,8 @@ const app = new Vue({
   render: h => h(App),
   router: appRoute
 })
+
+Echo.private('chat')
+  .listen('MessageEvent', (e) => {
+    console.log(e, 'skdfjklsdaj');
+});

@@ -95,6 +95,7 @@ export default {
         .post(`api/v1/login`, payload)
         .then((res) => {
           if (res.code === 200) {
+            localStorage.setItem("user", JSON.stringify(res.user));
             localStorage.setItem("token", res.token);
             localStorage.setItem("role", res.role);
             window.location.href = "/dashboard";
