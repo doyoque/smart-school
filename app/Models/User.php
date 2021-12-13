@@ -117,4 +117,14 @@ class User extends Authenticatable
     {
         return $this->belongsTo(School::class);
     }
+
+    /**
+     * User has many Messages
+     *
+     * @return this
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
