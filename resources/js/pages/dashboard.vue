@@ -37,7 +37,7 @@
         ]"
         @click="changeStateTab(stateTab)"
       >
-        teachers
+        students
       </button>
     </div>
     <table class="table-auto border-separate rounded-lg border border-blue-500">
