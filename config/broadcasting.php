@@ -38,7 +38,6 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => false,
-                'host' => env('PUSHER_APP_HOST'),
             ],
         ],
 
