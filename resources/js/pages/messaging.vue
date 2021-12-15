@@ -56,10 +56,10 @@ export default {
     async addMessage(newMessage) {
       const { user, message } = newMessage;
       Echo.join(`chat.${user.id}`)
-        .here((users) => console.log(users))
-        .joining((user) => console.log(user))
-        .leaving((user) => console.log(user))
-        .error((err) => console.log(err));
+        .here((users) => console.log(users, "here"))
+        .joining((user) => console.log(user, "join"))
+        .leaving((user) => console.log(user, "leaving"))
+        .error((err) => console.log(err, "err"));
 
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
