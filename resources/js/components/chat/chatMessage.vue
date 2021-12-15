@@ -8,13 +8,8 @@
       :key="item.id"
       :class="[user.id === item.user_id ? sender : receiver]"
     >
-      {{ item.message }} / {{ item.user_id }} : {{ user.id }}
+      {{ item.message }}
     </div>
-    <!-- <div
-      class=""
-    >
-      Aww thx!!
-    </div> -->
   </div>
 </template>
 <script>

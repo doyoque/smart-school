@@ -2,7 +2,7 @@
   <div class="bg-white text-black rounded-lg border shadow-lg p-10">
     <div class="grid grid-cols-12">
       <div class="col-start-1 col-end-6">
-        <chatUsers :users="users" v-on:user="getUser" />
+        <chatUsers v-on:user="getUser" :users="users" />
       </div>
       <div class="flex flex-col col-start-6 col-end-13 bg-white">
         <chatMessage :messages="messages" :user="sender()" />
@@ -55,6 +55,10 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
+      Echo.listen("MessageEvent", (e) => {
+        console.log(e, "lkasdjfklsdjl");
+      });
+
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
       } else {
@@ -71,6 +75,8 @@ export default {
       });
     },
     getUser(user) {
+      Echo.join(`chat.${user.id}`).error((error) => console.log(error));
+
       this.fetchMessages(user.id);
       this.selectedUser = user;
     },
