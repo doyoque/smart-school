@@ -35,9 +35,6 @@ export default {
     this.fetchUser();
 
     Echo.private(`chat.${this.sender().id}`)
-      .joining((user) => {
-        console.log(user);
-      })
       .listen("MessageEvent", (e) => {
         console.log(e, "lkasdjfklsdjl");
       })
@@ -51,7 +48,11 @@ export default {
         .catch((err) => console.log(err));
     },
     async fetchMessages(userId) {
-      Echo.join(`chat.${userId}`).error((err) => console.log(err, "err"));
+      Echo.join(`chat.${userId}`)
+        .joining((user) => {
+          console.log(user);
+        })
+        .error((err) => console.log(err, "err"));
 
       return await axios
         .get(`/api/v1/message?receiver_id=${userId}`)
