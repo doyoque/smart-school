@@ -61,6 +61,9 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
+      Echo.listen("MessageEvent", (e) => {
+        console.log(e);
+      });
       console.log(user);
 
       if (this.messages.length > 0) {
