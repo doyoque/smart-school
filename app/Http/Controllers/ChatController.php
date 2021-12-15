@@ -27,7 +27,10 @@ class ChatController extends Controller
     public function user(Request $request)
     {
         try {
-            $users = User::where('role_id', '>', 1)->where('school_id', '=', $request->user()->school_id)->get();
+            $users = User::where('role_id', '>', 1)
+                ->where('name', '!=', $request->user()->name)
+                ->where('school_id', '=', $request->user()->school_id)
+                ->get();
             return UserCollection::collection($users);
         } catch (\Exception $e) {
             Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
@@ -44,7 +47,12 @@ class ChatController extends Controller
     public function fetchMessages(Request $request)
     {
         $authUser = $request->user();
-        $messages = Message::where(['user_id' => $authUser->id, 'receiver_id' => $request->query('receiver_id')])
+
+        $messages = Message::with('user')
+            ->where(['user_id' => $authUser->id, 'receiver_id' => $request->query('receiver_id')])
+            ->orWhere(function ($query) use ($authUser, $request) {
+                $query->where(['user_id' => $request->query('receiver_id'), 'receiver_id' => $authUser->id]);
+            })
             ->orderBy('created_at', 'DESC')
             ->get();
         return response([
@@ -69,7 +77,7 @@ class ChatController extends Controller
                 'receiver_id' => $request->input('receiver_id'),
             ]);
 
-            // broadcast(new MessageEvent($user, $message))->toOthers();
+            broadcast(new MessageEvent($user, $message->load('user')))->toOthers();
 
             return response([
                 'message' => 'Message sent.',

@@ -5,7 +5,7 @@
         <chatUsers :users="users" v-on:user="getUser" />
       </div>
       <div class="flex flex-col col-start-6 col-end-13 bg-white">
-        <chatMessage :messages="messages" />
+        <chatMessage :messages="messages" :user="sender()" />
         <chatForm v-on:messageSent="addMessage" :user="selectedUser" />
       </div>
     </div>
@@ -33,6 +33,10 @@ export default {
   },
   created() {
     this.fetchUser();
+
+    Echo.private(`chat.${this.sender().id}`).listen("MessageEvent", (e) => {
+      console.log(e, "lkasdjfklsdjl");
+    });
   },
   methods: {
     async fetchUser() {
@@ -69,6 +73,9 @@ export default {
     getUser(user) {
       this.fetchMessages(user.id);
       this.selectedUser = user;
+    },
+    sender() {
+      return JSON.parse(localStorage.getItem("user"));
     },
   },
 };
