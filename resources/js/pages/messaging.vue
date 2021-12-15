@@ -65,6 +65,7 @@ export default {
     async addMessage(newMessage) {
       const { user, message } = newMessage;
       this.user = user;
+      Echo.leaveChannel(`chat.${user.id}`);
       Echo.join(`chat.${user.id}`)
         .joining((user) => {
           console.log(user);
