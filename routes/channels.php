@@ -19,5 +19,7 @@ use Illuminate\Support\Facades\Auth;
 // });
 
 Broadcast::channel('chat.{receiverid}', function ($user, $receiverid) {
-    return (int) $user->id === (int) $receiverid;
+    if (Auth::check()) {
+        return ['id' => $user->id, 'name' => $user->name];
+    }
 });
