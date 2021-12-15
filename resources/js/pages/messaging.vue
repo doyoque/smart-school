@@ -61,10 +61,6 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
-      Echo.listen("MessageEvent", (e) => {
-        console.log(e);
-      });
-      console.log(user);
 
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
@@ -90,6 +86,11 @@ export default {
     sender() {
       return JSON.parse(localStorage.getItem("user"));
     },
+  },
+  mounted() {
+    Echo.listen("MessageEvent", (e) => {
+      console.log(e);
+    });
   },
 };
 </script>
