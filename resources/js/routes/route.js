@@ -7,7 +7,7 @@ import LoginPage from '@pages/login.vue'
 import RegisterPage from '@pages/register.vue'
 import UpdatePage from '@pages/update.vue'
 import ViewPage from '@pages/view.vue'
-import Message from '@components/chat/messages.vue'
+import MessagePage from '@pages/messaging.vue'
 
 Vue.use(VueRouter)
 
@@ -69,9 +69,9 @@ const routes = [
     }
   },
   {
-    path: '/message',
-    name: 'message',
-    component: Message,
+    path: '/messaging',
+    name: 'messaging',
+    component: MessagePage,
   }
 ]
 

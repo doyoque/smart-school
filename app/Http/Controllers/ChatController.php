@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 use App\Models\Message;
 use App\Events\MessageEvent;
+use App\Http\Resources\UserCollection;
 
 class ChatController extends Controller
 {
@@ -17,14 +19,36 @@ class ChatController extends Controller
     }
 
     /**
+     * List available user.
+     *
+     * @param Illuminate\Http\Request $request
+     * @return mixed
+     */
+    public function user(Request $request)
+    {
+        try {
+            $users = User::where('role_id', '>', 1)->where('school_id', '=', $request->user()->school_id)->get();
+            return UserCollection::collection($users);
+        } catch (\Exception $e) {
+            Log::error(__FUNCTION__ . " user Exception" . $e->getMessage(), $e->getTrace());
+            return response(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
      * Show chats.
      *
+     * @param Illuminate\Http\Request $request
      * @return Illuminate\Http\Response $response
      */
-    public function fetchMessages()
+    public function fetchMessages(Request $request)
     {
+        $authUser = $request->user();
+        $messages = Message::where(['user_id' => $authUser->id, 'receiver_id' => $request->query('receiver_id')])
+            ->orderBy('created_at', 'DESC')
+            ->get();
         return response([
-            'data' => Message::with('user')->get(),
+            'data' => $messages,
             'code' => Response::HTTP_OK,
         ], Response::HTTP_OK);
     }
@@ -42,9 +66,10 @@ class ChatController extends Controller
 
             $message = $user->messages()->create([
                 'message' => $request->input('message'),
+                'receiver_id' => $request->input('receiver_id'),
             ]);
 
-            broadcast(new MessageEvent($user, $message))->toOthers();
+            // broadcast(new MessageEvent($user, $message))->toOthers();
 
             return response([
                 'message' => 'Message sent.',

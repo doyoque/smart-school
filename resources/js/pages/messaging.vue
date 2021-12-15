@@ -1,0 +1,75 @@
+<template>
+  <div class="bg-white text-black rounded-lg border shadow-lg p-10">
+    <div class="grid grid-cols-12">
+      <div class="col-start-1 col-end-6">
+        <chatUsers :users="users" v-on:user="getUser" />
+      </div>
+      <div class="flex flex-col col-start-6 col-end-13 bg-white">
+        <chatMessage :messages="messages" />
+        <chatForm v-on:messageSent="addMessage" :user="selectedUser" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import chatMessage from "@components/chat/chatMessage.vue";
+import chatForm from "@components/chat/chatForm.vue";
+import chatUsers from "@components/chat/chatUsers.vue";
+
+export default {
+  namae: "messaging",
+  components: {
+    chatMessage,
+    chatForm,
+    chatUsers,
+  },
+  data() {
+    return {
+      users: null,
+      messages: [],
+      selectedUser: null,
+    };
+  },
+  created() {
+    this.fetchUser();
+  },
+  methods: {
+    async fetchUser() {
+      await axios
+        .get(`/api/v1/message/user`)
+        .then((res) => (this.users = res.data))
+        .catch((err) => console.log(err));
+    },
+    async fetchMessages(userId) {
+      return await axios
+        .get(`/api/v1/message?receiver_id=${userId}`)
+        .then((res) => {
+          this.messages = res.data;
+        })
+        .catch((err) => console.log(err));
+    },
+    async addMessage(newMessage) {
+      const { user, message } = newMessage;
+      if (this.messages.length > 0) {
+        this.messages.unshift(newMessage);
+      } else {
+        this.messages.push(newMessage);
+      }
+
+      let payload = {
+        receiver_id: user.id,
+        message: message,
+      };
+
+      await axios.post(`/api/v1/message`, payload).catch((err) => {
+        console.log(err);
+      });
+    },
+    getUser(user) {
+      this.fetchMessages(user.id);
+      this.selectedUser = user;
+    },
+  },
+};
+</script>

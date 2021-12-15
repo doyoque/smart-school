@@ -35,7 +35,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('logout', [LoginController::class, 'logout']);
 
         // message
-        Route::get('message', [ChatController::class, 'fetchMessages']);
-        Route::post('message', [ChatController::class, 'sendMessage']);
+        Route::group(['prefix' => 'message'], function () {
+            Route::get('/', [ChatController::class, 'fetchMessages']);
+            Route::post('/', [ChatController::class, 'sendMessage']);
+            Route::get('user', [ChatController::class, 'user']);
+        });
     });
 });
