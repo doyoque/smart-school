@@ -46,11 +46,7 @@ export default {
         .catch((err) => console.log(err));
     },
     async fetchMessages(userId) {
-      Echo.join(`chat.${user.id}`)
-        .here((users) => console.log(users, "here"))
-        .joining((user) => console.log(user, "join"))
-        .leaving((user) => console.log(user, "leaving"))
-        .error((err) => console.log(err, "err"));
+      Echo.join(`chat.${userId}`).error((err) => console.log(err, "err"));
 
       return await axios
         .get(`/api/v1/message?receiver_id=${userId}`)
