@@ -34,9 +34,14 @@ export default {
   created() {
     this.fetchUser();
 
-    Echo.private(`chat.${this.sender().id}`).listen("MessageEvent", (e) => {
-      console.log(e, "lkasdjfklsdjl");
-    });
+    Echo.private(`chat.${this.sender().id}`)
+      .joining((user) => {
+        console.log(user);
+      })
+      .listen("MessageEvent", (e) => {
+        console.log(e, "lkasdjfklsdjl");
+      })
+      .error((err) => console.log(err));
   },
   methods: {
     async fetchUser() {
