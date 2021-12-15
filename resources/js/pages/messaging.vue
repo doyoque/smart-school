@@ -46,6 +46,12 @@ export default {
         .catch((err) => console.log(err));
     },
     async fetchMessages(userId) {
+      Echo.join(`chat.${user.id}`)
+        .here((users) => console.log(users, "here"))
+        .joining((user) => console.log(user, "join"))
+        .leaving((user) => console.log(user, "leaving"))
+        .error((err) => console.log(err, "err"));
+
       return await axios
         .get(`/api/v1/message?receiver_id=${userId}`)
         .then((res) => {
@@ -56,11 +62,6 @@ export default {
     async addMessage(newMessage) {
       const { user, message } = newMessage;
       console.log(user);
-      Echo.join(`chat.${user.id}`)
-        .here((users) => console.log(users, "here"))
-        .joining((user) => console.log(user, "join"))
-        .leaving((user) => console.log(user, "leaving"))
-        .error((err) => console.log(err, "err"));
 
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
