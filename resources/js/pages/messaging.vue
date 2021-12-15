@@ -53,26 +53,26 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    async addMessage(newMessage) {
+    addMessage(newMessage) {
       const { user, message } = newMessage;
       Echo.listen("MessageEvent", (e) => {
         console.log(e, "lkasdjfklsdjl");
       });
 
-      if (this.messages.length > 0) {
-        this.messages.unshift(newMessage);
-      } else {
-        this.messages.push(newMessage);
-      }
+      // if (this.messages.length > 0) {
+      //   this.messages.unshift(newMessage);
+      // } else {
+      //   this.messages.push(newMessage);
+      // }
 
-      let payload = {
-        receiver_id: user.id,
-        message: message,
-      };
+      // let payload = {
+      //   receiver_id: user.id,
+      //   message: message,
+      // };
 
-      await axios.post(`/api/v1/message`, payload).catch((err) => {
-        console.log(err);
-      });
+      // await axios.post(`/api/v1/message`, payload).catch((err) => {
+      //   console.log(err);
+      // });
     },
     getUser(user) {
       Echo.leave(`chat.${this.sender().id}`);
