@@ -55,6 +55,7 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
+      console.log(user);
       Echo.join(`chat.${user.id}`)
         .here((users) => console.log(users, "here"))
         .joining((user) => console.log(user, "join"))
