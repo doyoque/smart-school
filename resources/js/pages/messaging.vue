@@ -55,7 +55,7 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
-      Echo.join(`chat.${user.id}`).listen("MessageEvent", (e) => {
+      Echo.listen("MessageEvent", (e) => {
         console.log(e, "lkasdjfklsdjl");
       });
 
@@ -75,6 +75,7 @@ export default {
       });
     },
     getUser(user) {
+      Echo.leave(`chat.${this.sender().id}`);
       Echo.join(`chat.${user.id}`).error((error) => console.log(error));
 
       this.fetchMessages(user.id);
