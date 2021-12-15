@@ -29,6 +29,7 @@ export default {
       users: null,
       messages: [],
       selectedUser: null,
+      user: null,
     };
   },
   created() {
@@ -63,9 +64,14 @@ export default {
     },
     async addMessage(newMessage) {
       const { user, message } = newMessage;
-      Echo.join(`chat.${user.id}`).listen("MessageEvent", (e) => {
-        console.log(e);
-      });
+      this.user = user;
+      Echo.join(`chat.${user.id}`)
+        .joining((user) => {
+          console.log(user);
+        })
+        .listen("MessageEvent", (e) => {
+          console.log(e);
+        });
 
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
@@ -90,6 +96,8 @@ export default {
       return JSON.parse(localStorage.getItem("user"));
     },
   },
-  mounted() {},
+  mounted() {
+    console.log(this.user);
+  },
 };
 </script>
