@@ -74,9 +74,7 @@ export default {
         .joining((user) => {
           console.log(user);
         })
-        .listen("MessageEvent", (e) => {
-          console.log(e);
-        });
+        .leaving((user) => console.log(user));
 
       if (this.messages.length > 0) {
         this.messages.unshift(newMessage);
