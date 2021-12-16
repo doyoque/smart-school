@@ -12,6 +12,10 @@
       @click="getUser(item)"
     >
       {{ item.name }}
+      <span
+        class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full"
+        >{{ getTotalMessage() }}</span
+      >
     </li>
   </ul>
 </template>
@@ -19,7 +23,12 @@
 <script>
 export default {
   name: "chat-users",
-  props: ["users"],
+  props: ["users", "newMessages"],
+  data() {
+    return {
+      countNewMessage: 0,
+    };
+  },
   methods: {
     getUser(user) {
       this.$emit("user", {
@@ -27,6 +36,18 @@ export default {
         name: user.name,
         email: user.email,
       });
+
+      this.countNewMessage = 0;
+    },
+    getTotalMessage() {
+      console.log(this.newMessages);
+      if (this.newMessages > 0) {
+        this.countNewMessage++;
+      } else {
+        this.countNewMessage = 0;
+      }
+
+      return this.countNewMessage;
     },
   },
 };

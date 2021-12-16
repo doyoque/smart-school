@@ -12,8 +12,7 @@
           : receiver,
       ]"
     >
-      {{ item.message }} / {{ item.user_id }} \ {{ typeof item.user_id }} |
-      {{ user.id }}
+      {{ item.message }}
     </div>
   </div>
 </template>

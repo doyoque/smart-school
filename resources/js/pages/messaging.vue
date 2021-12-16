@@ -2,7 +2,11 @@
   <div class="bg-white text-black rounded-lg border shadow-lg p-10">
     <div class="grid grid-cols-12">
       <div class="col-start-1 col-end-6">
-        <chatUsers v-on:user="getUser" :users="users" />
+        <chatUsers
+          v-on:user="getUser"
+          :users="users"
+          :newMessages="newMessages"
+        />
       </div>
       <div class="flex flex-col col-start-6 col-end-13 bg-white">
         <chatMessage :messages="messages" :user="sender()" />
@@ -28,6 +32,7 @@ export default {
     return {
       users: null,
       messages: [],
+      newMessages: [],
       selectedUser: null,
       user: null,
     };
@@ -37,7 +42,12 @@ export default {
 
     Echo.private(`chat.${this.sender().id}`)
       .listen("MessageEvent", (e) => {
-        console.log(e.message);
+        console.log(e);
+        this.newMessages.push({
+          message: e.messages.message,
+          user: e.user,
+        });
+
         this.messages.push({
           message: e.message.message,
           user: e.user,
