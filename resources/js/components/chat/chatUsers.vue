@@ -29,6 +29,11 @@ export default {
       countNewMessage: 0,
     };
   },
+  watch: {
+    countNewMessage(oldVal, newVal) {
+      console.log(oldVal, newVal);
+    },
+  },
   methods: {
     getUser(user) {
       this.$emit("user", {
