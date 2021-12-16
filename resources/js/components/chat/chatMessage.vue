@@ -6,12 +6,9 @@
     <div
       v-for="item in messages"
       :key="item.id"
-      :class="[
-        user.id === item.user_id ? sender : receiver,
-        item.user_id === undefined ? sender : receiver,
-      ]"
+      :class="[user.id === item.user_id ? sender : receiver]"
     >
-      {{ item.message }}
+      {{ item.message }} / {{ item.user_id }} & {{ user.id }}
     </div>
   </div>
 </template>
