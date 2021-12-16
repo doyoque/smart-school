@@ -47,7 +47,7 @@ export default {
     getTotalMessage() {
       console.log(this.newMessages);
       if (this.newMessages > 0) {
-        this.countNewMessage++;
+        this.countNewMessage = this.countNewMessage + 1;
       } else {
         this.countNewMessage = 0;
       }
