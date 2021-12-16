@@ -44,7 +44,7 @@ export default {
       .listen("MessageEvent", (e) => {
         console.log(e);
         this.newMessages.push({
-          message: e.messages.message,
+          message: e.message.message,
           user: e.user,
         });
 
