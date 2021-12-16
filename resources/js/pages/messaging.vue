@@ -38,10 +38,12 @@ export default {
     Echo.private(`chat.${this.sender().id}`)
       .listen("MessageEvent", (e) => {
         console.log(e.message);
-        this.messages.unshift({
-          message: e.message.message,
-          user: e.user,
-        });
+        this.messages
+          .push({
+            message: e.message.message,
+            user: e.user,
+          })
+          .reverse();
       })
       .error((err) => console.log(err));
   },
