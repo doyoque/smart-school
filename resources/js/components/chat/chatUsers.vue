@@ -46,7 +46,10 @@ export default {
     },
     getTotalMessage() {
       console.log(this.newMessages, this.newMessages.length, "getTotalMessage");
-      if (this.newMessages.length > 0) {
+      if (
+        this.newMessages.length > 0 &&
+        this.newMessages.user.id === this.newMessages.message.user_id
+      ) {
         this.countNewMessage = this.countNewMessage + 1;
       } else {
         this.countNewMessage = 0;
