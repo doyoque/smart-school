@@ -37,6 +37,7 @@ export default {
 
     Echo.private(`chat.${this.sender().id}`)
       .listen("MessageEvent", (e) => {
+        console.log(e.message);
         this.messages.push({
           message: e.message.message,
           user: e.user,
