@@ -27,6 +27,7 @@ class LoginController extends Controller
 
                 $data['message'] = 'Logged in.';
                 $data['user'] = [
+                    'id' => $user->id,
                     'name' => $user->name,
                     'usernmae' => $user->username,
                     'email' => $user->email,
