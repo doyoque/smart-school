@@ -45,7 +45,7 @@
 <script>
 export default {
   name: "chat-form",
-  props: ["user"],
+  props: ["user", "sender"],
   data() {
     return {
       newMessage: "",
@@ -55,6 +55,7 @@ export default {
     sendMessage() {
       this.$emit("messageSent", {
         user: this.user,
+        receiver: this.sender,
         message: this.newMessage,
       });
 

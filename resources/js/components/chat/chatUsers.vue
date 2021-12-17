@@ -7,6 +7,7 @@
       :key="item.id"
       :class="[
         'w-full px-4 py-2 border-b border-gray-200 hover:bg-gray-400 hover:text-gray-50',
+        selected.name === item.name ? 'bg-gray-300 hover:bg-gray-400' : '',
       ]"
       style="cursor: pointer"
       @click="getUser(item)"
@@ -19,7 +20,7 @@
 <script>
 export default {
   name: "chat-users",
-  props: ["users"],
+  props: ["users", "selected"],
   methods: {
     getUser(user) {
       this.$emit("user", {

@@ -2,11 +2,19 @@
   <div class="bg-white text-black rounded-lg border shadow-lg p-10">
     <div class="grid grid-cols-12">
       <div class="col-start-1 col-end-6">
-        <chatUsers v-on:user="getUser" :users="users" />
+        <chatUsers
+          v-on:user="getUser"
+          :users="users"
+          :selected="selectedUser"
+        />
       </div>
       <div class="flex flex-col col-start-6 col-end-13 bg-white">
         <chatMessage :messages="messages" :user="sender()" />
-        <chatForm v-on:messageSent="addMessage" :user="selectedUser" />
+        <chatForm
+          v-on:messageSent="addMessage"
+          :user="selectedUser"
+          :sender="sender()"
+        />
       </div>
     </div>
   </div>
@@ -28,7 +36,11 @@ export default {
     return {
       users: null,
       messages: [],
-      selectedUser: null,
+      selectedUser: {
+        id: null,
+        name: null,
+        email: null,
+      },
       user: null,
     };
   },
@@ -37,11 +49,18 @@ export default {
 
     Echo.private(`chat.${this.sender().id}`)
       .listen("MessageEvent", (e) => {
-        console.log(e);
-        this.messages.unshift({
-          message: e.message.message,
-          user: e.user,
-        });
+        let { user, message } = e;
+        let newMessage = {
+          message: message.message,
+          receiver_id: message.receiver_id,
+          user: user,
+          user_id: user.id,
+        };
+
+        if (this.selectedUser !== null) {
+          if (this.selectedUser.id === newMessage.user_id)
+            this.messages.unshift(newMessage);
+        }
       })
       .error((err) => console.log(err));
   },
@@ -67,7 +86,14 @@ export default {
         .catch((err) => console.log(err));
     },
     async addMessage(newMessage) {
-      const { user, message } = newMessage;
+      const { user, message, receiver } = newMessage;
+      let modifyNewMessage = {
+        message: message,
+        receiver_id: receiver.id,
+        user: user,
+        user_id: receiver.id,
+      };
+
       this.user = user;
       Echo.leaveChannel(`chat.${user.id}`);
       Echo.join(`chat.${user.id}`)
@@ -77,9 +103,9 @@ export default {
         .leaving((user) => console.log(user));
 
       if (this.messages.length > 0) {
-        this.messages.unshift(newMessage);
+        this.messages.unshift(modifyNewMessage);
       } else {
-        this.messages.push(newMessage);
+        this.messages.push(modifyNewMessage);
       }
 
       let payload = {
@@ -98,9 +124,6 @@ export default {
     sender() {
       return JSON.parse(localStorage.getItem("user"));
     },
-  },
-  mounted() {
-    console.log(this.user);
   },
 };
 </script>

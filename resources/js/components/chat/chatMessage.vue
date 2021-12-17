@@ -6,9 +6,12 @@
     <div
       v-for="item in messages"
       :key="item.id"
-      :class="[user.id === item.user_id ? sender : receiver]"
+      :class="[
+        user.id === item.user_id ? sender : receiver,
+        item.message.length > 20 ? 'w-48' : '',
+      ]"
     >
-      {{ item.message }} / {{ item.user_id }} & {{ user.id }}
+      {{ item.message }}
     </div>
   </div>
 </template>
@@ -21,7 +24,7 @@ export default {
       receiver:
         "other break-all mt-2 ml-5 rounded-bl-none float-none bg-gray-300 mr-auto rounded-2xl p-2",
       sender:
-        "w-max ml-auto break-all mt-2 mb-1 p-2 rounded-br-none bg-blue-500 rounded-2xl text-white text-left mr-5",
+        "ml-auto break-all mt-2 mb-1 p-2 rounded-br-none bg-blue-500 rounded-2xl text-white text-left mr-5",
     };
   },
 };
