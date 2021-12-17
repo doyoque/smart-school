@@ -72,6 +72,9 @@ const routes = [
     path: '/messaging',
     name: 'messaging',
     component: MessagePage,
+    meta: {
+      school_admin: false
+    }
   }
 ]
 

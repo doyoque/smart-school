@@ -1,6 +1,12 @@
 <template>
   <div class="bg-white text-black rounded-lg border shadow-lg p-10">
-    <div class="grid grid-cols-12">
+    <router-link
+      class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 mb-2 rounded mr-1"
+      to="/dashboard"
+    >
+      back
+    </router-link>
+    <div class="grid grid-cols-12 mt-2">
       <div class="col-start-1 col-end-6">
         <chatUsers
           v-on:user="getUser"

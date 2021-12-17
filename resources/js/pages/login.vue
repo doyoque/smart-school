@@ -83,6 +83,11 @@ export default {
       password: "",
     };
   },
+  created() {
+    if (localStorage.getItem("token") !== null) {
+      window.location.href = "/dashboard";
+    }
+  },
   methods: {
     async login() {
       let payload = {
@@ -90,7 +95,6 @@ export default {
         school_id: this.school_id,
         password: this.password,
       };
-
       await axios
         .post(`api/v1/login`, payload)
         .then((res) => {

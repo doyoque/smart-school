@@ -1,6 +1,12 @@
 <template>
   <div class="bg-white text-black font-bold rounded-lg border shadow-lg p-10">
     <div class="grid grid-cols-8">
+      <router-link
+        to="/messaging"
+        class="bg-green-500 hover:bg-green-700 text-white text-center font-bold py-1 mb-2 px-4 rounded mr-1 col-start-1 col-end-1"
+      >
+        messaging
+      </router-link>
       <button
         class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 mb-2 rounded mr-1 col-start-8 col-end-8"
         @click="logOut()"
